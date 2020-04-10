@@ -1,0 +1,14 @@
+---
+# tasks file for ansible-yum-nginx
+- name: Install a list of packages | nginx
+  yum:
+    name:
+      - nginx
+    state: present
+
+- name: Start service nginx, if not started
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+

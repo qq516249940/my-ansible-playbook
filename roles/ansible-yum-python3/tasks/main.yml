@@ -1,0 +1,29 @@
+---
+# tasks file for ansible-yum-python3
+- name: install the python3 rpm from a remote repo
+  yum:
+    name: https://centos7.iuscommunity.org/ius-release.rpm
+    state: present
+
+- name: Install a list of packages
+  yum:
+    name:
+      - python36u
+      - python36u-libs
+      - python36u-devel
+      - python36u-pip
+    state: present
+  notify:
+    - python3 create  venv
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    executable: pip-3
+
+
+#- name: python3 create  venv 
+#  shell: |
+#     python3.6 -m venv /opt/py3
+#     exit 0
+

@@ -1,0 +1,30 @@
+---
+- hosts: "{{ hosts | default('127.0.0.1') }}"
+  remote_user: root
+  roles:
+     - role: ansible-zabbix-agent
+       zabbix_agent_package: zabbix-agent
+       #zabbix_agent_version: 4.4
+       zabbix_agent_server: 192.168.1.1
+       zabbix_agent_serveractive: 192.168.1.1
+       zabbix_url: http://192.168.1.1/zabbix
+       zabbix_api_use: true # use zabbix_api_create_hosts and/or zabbix_api_create_hostgroup from 0.8.0
+       zabbix_api_user: Admin
+       zabbix_api_pass: 123456
+       zabbix_create_host: present
+       zabbix_api_create_hostgroup: true
+       zabbix_api_create_hosts: true
+       zabbix_host_groups:
+         - aws Linux Servers
+       zabbix_link_templates:
+         - Template OS Linux
+#         - Apache APP Template
+       zabbix_macros:
+         - macro_key: nginx_type
+           macro_value: reverse_proxy
+#    - nginx
+#    - nginx_site
+#    - lets_encrypt
+#    - s3_sync
+#    - logrotate
+#

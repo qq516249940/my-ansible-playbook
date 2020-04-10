@@ -1,0 +1,15 @@
+---
+- hosts: "{{ hosts | default('127.0.0.1') }}"
+  remote_user: root
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+  roles:
+    - ansible-role-nfs
+#    - nginx
+#    - nginx_site
+#    - lets_encrypt
+#    - s3_sync
+#    - logrotate
+#
+

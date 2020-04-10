@@ -1,0 +1,15 @@
+---
+- hosts: all
+  remote_user: root
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+  roles:
+    - ansible-java-oracle-jdk
+#    - nginx
+#    - nginx_site
+#    - lets_encrypt
+#    - s3_sync
+#    - logrotate
+#
+
