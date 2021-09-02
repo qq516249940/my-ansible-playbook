@@ -1,0 +1,105 @@
+---
+
+- hosts: claw
+  vars:
+    - zabbix_version: 5.4
+    - zabbix_agent_distribution_major_version: 7
+  vars_files:
+    - zabbix-agent/zabbix_external_vars.yml
+
+
+
+  tasks:
+
+    # - name: copy zabbix_agent.rpm
+
+    #   copy: src=./zabbix-agent-4.2.6-1.el7.x86_64.rpm  dest=/opt/zabbix-agent-4.2.6-1.el7.x86_64.rpm
+    - name: "RedHat | Install basic repo file"
+      yum_repository:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        baseurl: "{{ item.baseurl }}"
+        gpgcheck: "{{ item.gpgcheck }}"
+        gpgkey: "{{ item.gpgkey }}"
+        priority: "{{ item.priority | default('99') }}"
+        state: "{{ item.state | default('present') }}"
+        # proxy: "{{ zabbix_http_proxy | default(omit) }}"
+      with_items: "{{ zabbix_repo_yum }}"
+      register: yum_repo_installed
+      become: yes
+
+    - name: Install the zabbix_agent rpm from a remote repo
+      yum:
+        name: zabbix-agent
+        state: present
+
+    - name: Enable service zabbix-agent, and not touch the state
+      ansible.builtin.service:
+        name: zabbix-agent
+        state: started
+        enabled: yes
+
+    - name: copy zabbix_agent.conf
+
+      copy: src=zabbix-agent/zabbix_agentd.conf  dest=/etc/zabbix/zabbix_agentd.conf
+
+    - name: restarted and enable zabbix-agent
+
+      service :
+
+        name: zabbix-agent
+
+        state: restarted
+
+        enabled: yes
+
+# pip3 install zabbix-api
+# https://docs.ansible.com/ansible/latest/collections/community/zabbix/zabbix_host_module.html
+    - name: create a new host
+
+      local_action:
+
+        module: zabbix_host
+
+        server_url: http://192.168.5.222:8082
+
+        login_user: Admin
+
+        login_password: zabbix
+
+        force: yes
+
+        host_name: "{{ ansible_default_ipv4.address}}"
+
+        visible_name: "{{ ansible_hostname }}"
+
+        host_groups:
+
+          - Linux servers
+
+        link_templates:
+
+          # - Template Module ICMP Ping
+
+          - Linux by Zabbix agent
+
+
+        status: enabled
+
+        state: present
+
+        inventory_mode: automatic
+
+        interfaces:
+
+          - type: 1
+
+            main: 1
+
+            useip: 1
+
+            ip: "{{ ansible_default_ipv4.address }}"
+
+            dns: ""
+
+            port: "10050"
