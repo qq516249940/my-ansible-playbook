@@ -41,7 +41,7 @@
 
     - name: copy zabbix_agent.conf
 
-      copy: src=zabbix-agent/zabbix_agentd.conf  dest=/etc/zabbix/zabbix_agentd.conf
+      template: src=zabbix-agent/zabbix_agentd.conf.j2  dest=/etc/zabbix/zabbix_agentd.conf
 
     - name: restarted and enable zabbix-agent
 
